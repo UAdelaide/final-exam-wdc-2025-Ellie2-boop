@@ -83,8 +83,6 @@
 
   <script>
   const { createApp, ref, onMounted } = Vue;
-  const API_BASE = 'http://localhost:3000';
-
 
   createApp({
     setup() {
@@ -96,13 +94,47 @@
       });
 
       const walks = ref([]);
+      const dogs = ref([]);
       const message = ref('');
       const error = ref('');
-      const dogs = ref([]); // Holds the list of dogs for the dropdown
+
+      async function loadDogs() {
+        const user = JSON.parse(sessionStorage.getItem('loggedInUser'));
+        console.log('Logged-in user:', user);
+        if (!user || user.role !== 'owner') {
+          alert('You must be logged in as an owner to see this page.');
+          window.location.href = 'index.html';
+          return;
+        }
+
+        try {
+          const res = await fetch(`http://localhost:3000/api/owner/${user.user_id}/dogs`);
+          const data = await res.json();
+          console.log('Dogs fetched:', data);
+          dogs.value = data;
+
+          const dogSelect = document.getElementById('dogSelect');
+          dogSelect.innerHTML = '';
+          if (data.length === 0) {
+            dogSelect.innerHTML = '<option value="">No dogs found</option>';
+          } else {
+            data.forEach(dog => {
+              const option = document.createElement('option');
+              option.value = dog.dog_id;
+              option.textContent = dog.name;
+              dogSelect.appendChild(option);
+            });
+          }
+        } catch (err) {
+          console.error('Error fetching dogs:', err);
+          const dogSelect = document.getElementById('dogSelect');
+          dogSelect.innerHTML = '<option value="">Failed to load dogs</option>';
+        }
+      }
 
       async function loadWalks() {
         try {
-          const res = await fetch('/api/walks');
+          const res = await fetch('http://localhost:3000/api/walks');
           walks.value = await res.json();
         } catch (err) {
           error.value = 'Failed to load walk requests';
@@ -111,13 +143,13 @@
 
       async function submitWalkRequest() {
         try {
-          const res = await fetch('/api/walks', {
+          const res = await fetch('http://localhost:3000/api/walks', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(form.value)
           });
-          const result = await res.json();
 
+          const result = await res.json();
           if (!res.ok) throw new Error(result.error || 'Error submitting walk request');
 
           message.value = result.message;
@@ -136,45 +168,26 @@
       }
 
       onMounted(() => {
-        const user = JSON.parse(sessionStorage.getItem('loggedInUser'));
-        console.log('Logged-in user:', user);
-        if (!user || user.role !== 'owner') {
-          alert('You must be logged in as an owner to see this page.');
-          window.location.href = 'index.html';
-          return;
-        }
-
-        // Load the dogs for the dropdown
-        fetch(`/api/owner/${user.user_id}/dogs`)
-          .then(response => response.json())
-          .then(data => {
-            console.log('Dogs fetched:', data);
-            dogs.value = data;
-          })
-          .catch(error => {
-            console.error('Error fetching dogs:', error);
-          });
-
+        loadDogs();
         loadWalks();
       });
 
       return {
         form,
         walks,
+        dogs,
         message,
         error,
-        dogs,
         submitWalkRequest
       };
     }
   }).mount('#app');
 
-  // Logout function
+  // Logout handler
   document.getElementById('logoutBtn').addEventListener('click', () => {
     sessionStorage.removeItem('loggedInUser');
-    document.cookie.split(";").forEach(function(c) {
-      document.cookie = c.replace(/^ +/, "")
-        .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+    document.cookie.split(";").forEach(c => {
+      document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
     });
     window.location.href = 'index.html';
   });
