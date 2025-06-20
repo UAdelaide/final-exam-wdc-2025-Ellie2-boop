@@ -16,16 +16,14 @@
   <div class="card-header bg-primary text-white fs-4">
     Create New Walk Request
 
-<div class="mb-3">
+      </div>
+      <div class="card-body">
+        <div class="mb-3">
   <label for="dogSelect" class="form-label">Select Your Dog</label>
-  <select v-model="form.dog_id" id="dogSelect" class="form-select" required>
-    <option disabled value="">Please select a dog</option>
-    <option v-for="dog in dogs" :key="dog.dog_id" :value="dog.dog_id">
-      {{ dog.name }}
-    </option>
+  <select id="dogSelect" v-model="form.dog_id" class="form-select" required>
+    <option value="">Loading dogs...</option>
   </select>
 </div>
-
         <form @submit.prevent="submitWalkRequest">
           <div class="mb-3">
             <label class="form-label">Dog ID</label>
