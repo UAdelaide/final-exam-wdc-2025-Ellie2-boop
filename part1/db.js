@@ -1,16 +1,14 @@
+// db.js
 const mysql = require('mysql2/promise');
-
-console.log("🔍 DB config loaded");
-
 
 const pool = mysql.createPool({
   host: 'localhost',
   user: 'root',
-  password: 'Yes',
+  password: 'Yes',// your exact password here, case-sensitive
   database: 'DogWalkService',
-  multipleStatements: true
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
 });
-
-
 
 module.exports = pool;
