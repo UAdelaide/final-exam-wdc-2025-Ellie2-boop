@@ -12,6 +12,24 @@ router.get('/', async (req, res) => {
   }
 });
 
+// Add this below your existing routes in userRoutes.js
+
+// GET dogs owned by a specific user
+router.get('/owner/:user_id/dogs', async (req, res) => {
+  const { user_id } = req.params;
+  try {
+    const [rows] = await db.query(
+      'SELECT dog_id, name FROM Dogs WHERE owner_id = ?',
+      [user_id]
+    );
+    res.json(rows);
+  } catch (error) {
+    console.error('Error fetching dogs:', error.message);
+    res.status(500).json({ error: 'Failed to fetch dogs' });
+  }
+});
+
+
 // POST a new user (simple signup)
 router.post('/register', async (req, res) => {
   const { username, email, password, role } = req.body;
