@@ -3,6 +3,7 @@ const cors = require('cors');
 app.use(cors());
 
 const pool = require('./db');
+const { router } = require('../part2/app');
 
 const app = express();
 const PORT = 3000;
