@@ -79,6 +79,13 @@
 
 
   <script>
+    const user = JSON.parse(sessionStorage.getItem('loggedInUser'));
+console.log('Logged-in user:', user);
+if (!user || user.role !== 'owner') {
+  alert('You must be logged in as an owner to see this page.');
+  return;
+}
+
     const { createApp, ref, onMounted } = Vue;
 
     createApp({
