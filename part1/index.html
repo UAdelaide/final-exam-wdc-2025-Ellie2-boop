@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dog of the Day</title>
+  <!-- Vue 3 CDN -->
+  <script src="https://unpkg.com/vue@3"></script>
+  <style>
+    /* Bad color contrast */
+    body {
+      background-color: #222;
+      color: #555; /* low contrast */
+      font-family: Arial, sans-serif;
+    }
+    /* Tiny button */
+    button {
+      width: 20px;
+      height: 20px;
+      margin: 50px;
+      cursor: pointer;
+    }
+    /* Multiple font sizes and fonts to confuse */
+    h1 {
+      font-size: 18px;
+      font-family: 'Comic Sans MS', cursive;
+    }
+    p {
+      font-size: 12px;
+      font-family: 'Times New Roman', serif;
+    }
+    /* Scrolling marquee */
+    .marquee {
+      width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      box-sizing: border-box;
+      animation: marquee 10s linear infinite;
+      background: yellow;
+      color: red;
+      font-weight: bold;
+    }
+    @keyframes marquee {
+      0%   { transform: translate(100%, 0); }
+      100% { transform: translate(-100%, 0); }
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div class="marquee">Welcome to the Dog of the Day! Click the tiny button to load a new dog.</div>
+
+    <h1>{{ dogName }}</h1>
+    <img :src="dogImage" alt="" style="width: 400px; height: 400px;" />
+    <!-- Missing alt text breaks accessibility -->
+
+    <p><strong>Breed:</strong> {{ dogBreed }}</p>
+    <p><strong>Age:</strong> {{ dogAge }}</p>
+
+    <!-- Tiny, hard to click button (kinematic load) -->
+    <button @click="fetchDog" title="Reload Dog">↻</button>
+  </div>
+
+  <script>
+    const { createApp } = Vue;
+
+    createApp({
+      data() {
+        return {
+          dogImage: '',
+          dogName: 'Fluffy',
+          dogBreed: 'Unknown Mix',
+          dogAge: '3 years',
+        }
+      },
+      mounted() {
+        this.fetchDog();
+      },
+      methods: {
+        fetchDog() {
+          fetch('https://dog.ceo/api/breeds/image/random')
+            .then(res => res.json())
+            .then(data => {
+              this.dogImage = data.message;
+            });
+        }
+      }
+    }).mount('#app');
+  </script>
+</body>
+</html>
