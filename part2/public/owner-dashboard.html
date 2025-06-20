@@ -83,6 +83,9 @@
 
   <script>
   const { createApp, ref, onMounted } = Vue;
+  const API_BASE_URL = 'http://localhost:3000';
+fetch(`${API_BASE_URL}/api/owner/${user.user_id}/dogs`)
+
 
 
   createApp({
