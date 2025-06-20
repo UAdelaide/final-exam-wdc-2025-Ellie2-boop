@@ -25,6 +25,21 @@ app.get('/api/dogs', async (req, res) => {
   }
 });
 
+// Route to get all dogs owned by a specific owner
+app.get('/api/owner/:ownerId/dogs', async (req, res) => {
+  const ownerId = req.params.ownerId;
+  try {
+    const [dogs] = await pool.query(
+      'SELECT dog_id, name FROM Dogs WHERE owner_id = ?',
+      [ownerId]
+    );
+    res.json(dogs);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
 // GET /api/walkrequests/open
 app.get('/api/walkrequests/open', async (req, res) => {
   try {
