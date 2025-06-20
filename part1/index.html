@@ -51,13 +51,14 @@
       Loading image...
     </div>
 
-    <img
-      v-if="dogImage"
-      :src="dogImage"
-      :alt="`Picture of dog named ${dogName}`"
-      style="width: 400px; height: 400px;"
-      role="img"
-    />
+  <img
+  v-if="dogImage"
+  :src="dogImage"
+  :alt="`Picture of dog named ${dogName}`"
+  style="width: 400px; height: 400px;"
+  role="img"
+/>
+
 
     <p><strong>Breed:</strong> {{ dogBreed }}</p>
     <p><strong>Age:</strong> {{ dogAge }}</p>
