@@ -1,6 +1,5 @@
 const express = require('express');
 const path = require('path');
-const pool = require('./models/db'); // For consistency, but not used directly here
 
 const app = express();
 
