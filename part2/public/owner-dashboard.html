@@ -143,16 +143,17 @@
           return;
         }
 
-        // Load the dogs for the dropdown
-        fetch(`/api/owner/${user.user_id}/dogs`)
-          .then(response => response.json())
-          .then(data => {
-            console.log('Dogs fetched:', data);
-            dogs.value = data;
-          })
-          .catch(error => {
-            console.error('Error fetching dogs:', error);
-          });
+       // Load the dogs for the dropdown (explicit backend URL)
+fetch(`http://localhost:3000/api/owner/${user.user_id}/dogs`)
+  .then(response => response.json())
+  .then(data => {
+    console.log('Dogs fetched:', data);
+    dogs.value = data;
+  })
+  .catch(error => {
+    console.error('Error fetching dogs:', error);
+  });
+
 
         loadWalks();
       });
