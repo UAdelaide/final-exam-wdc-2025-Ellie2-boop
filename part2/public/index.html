@@ -29,51 +29,49 @@
   </div>
 
   <script>
-  const { createApp } = Vue;
+    const { createApp } = Vue;
 
-  createApp({
-    data() {
-      return {
-        message: 'Welcome to the Dog Walking Service!',
-        username: '',
-        password: '',
-        errorMessage: ''
-      };
-    },
-    methods: {
-      async login() {
-        this.errorMessage = '';
+    createApp({
+      data() {
+        return {
+          message: 'Welcome to the Dog Walking Service!',
+          username: '',
+          password: '',
+          errorMessage: ''
+        };
+      },
+      methods: {
+        login() {
+          this.errorMessage = '';
 
-        try {
-          const res = await fetch('/api/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: this.username, password: this.password })
-          });
+          // Hardcoded user list - replace with real API call for production
+          const users = [
+            { username: 'alice123', password: 'hashed123', role: 'owner' },
+            { username: 'bobwalker', password: 'hashed456', role: 'walker' },
+            { username: 'carol123', password: 'hashed789', role: 'owner' },
+            { username: 'david789', password: 'hashed101', role: 'walker' },
+            { username: 'ellie456', password: 'hashed202', role: 'owner' }
+          ];
 
-          const data = await res.json();
+          const user = users.find(u => u.username === this.username && u.password === this.password);
 
-          if (!res.ok) {
-            this.errorMessage = data.error || 'Login failed';
-            return;
-          }
+          if (user) {
+            // Save user session in sessionStorage
+            sessionStorage.setItem('loggedInUser', JSON.stringify(user));
 
-          // Save full user (including user_id) returned by backend
-          sessionStorage.setItem('loggedInUser', JSON.stringify(data.user));
-
-          if (data.user.role === 'owner') {
-            window.location.href = 'owner-dashboard.html';
+            // Redirect based on role
+            if (user.role === 'owner') {
+              window.location.href = 'owner-dashboard.html';
+            } else {
+              window.location.href = 'walker-dashboard.html';
+            }
           } else {
-            window.location.href = 'walker-dashboard.html';
+            this.errorMessage = 'Invalid username or password.';
           }
-        } catch (error) {
-          this.errorMessage = 'Network error';
         }
       }
-    }
-  }).mount('#app');
-</script>
-
+    }).mount('#app');
+  </script>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
