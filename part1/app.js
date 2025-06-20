@@ -11,19 +11,19 @@ app.get('/', (req, res) => {
 });
 
 // Get all dogs with their owner usernames
-app.get('/api/dogs', async (req, res) => {
-  try {
-    const [rows] = await pool.query(`
-      SELECT d.name AS dog_name, d.size, u.username AS owner_username
-      FROM Dogs d
-      JOIN Users u ON d.owner_id = u.user_id;
-    `);
-    res.json(rows);
-  } catch (err) {
-    console.error('Error fetching dogs:', err.message);
-    res.status(500).json({ error: err.message });
-  }
+app.get('/api/dogs', (req, res) => {
+  // Manually created array of dogs with owner info
+  const manualDogs = [
+    { dog_name: 'Max', size: 'medium', owner_username: 'alice123' },
+    { dog_name: 'Bella', size: 'small', owner_username: 'carol123' },
+    { dog_name: 'Charlie', size: 'large', owner_username: 'ellie456' },
+    { dog_name: 'Daisy', size: 'medium', owner_username: 'alice123' },
+    { dog_name: 'Rocky', size: 'small', owner_username: 'carol123' },
+  ];
+
+  res.json(manualDogs);
 });
+
 
 // Get dogs by owner id
 app.get('/api/owner/:user_id/dogs', (req, res) => {
