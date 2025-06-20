@@ -16,10 +16,12 @@
       <div class="card-header bg-primary text-white">
         Create New Walk Request
 
-        <label for="dogSelect">Select Your Dog:</label>
-<select id="dogSelect">
-  <option value="">Loading dogs...</option>
-</select>
+<div class="mb-3">
+  <label for="dogSelect" class="form-label">Select Your Dog</label>
+  <select id="dogSelect" v-model="form.dog_id" class="form-select" required>
+    <option value="">Loading dogs...</option>
+  </select>
+</div>
 
       </div>
       <div class="card-body">
