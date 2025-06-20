@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <title>Walker Dashboard - Dog Walking Service</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
   <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 </head>
 <body class="bg-light">
@@ -22,9 +22,9 @@
           <div class="card-body">
             <h5 class="card-title">Walk for {{ walk.dog_name }} ({{ walk.size }})</h5>
             <p class="card-text">
-              <strong>Date:</strong> {{ new Date(walk.requested_time).toLocaleString() }}<br>
-              <strong>Duration:</strong> {{ walk.duration_minutes }} minutes<br>
-              <strong>Location:</strong> {{ walk.location }}<br>
+              <strong>Date:</strong> {{ new Date(walk.requested_time).toLocaleString() }}<br />
+              <strong>Duration:</strong> {{ walk.duration_minutes }} minutes<br />
+              <strong>Location:</strong> {{ walk.location }}<br />
               <strong>Owner:</strong> {{ walk.owner_name }}
             </p>
             <button type="button" class="btn btn-outline-success" @click="applyToWalk(walk.request_id)">Apply</button>
@@ -38,65 +38,65 @@
   <button type="button" id="logoutBtn" class="btn btn-danger">Logout</button>
 
   <script>
-    const { createApp, ref, onMounted } = Vue;
+    const { createApp, ref } = Vue;
 
     createApp({
       setup() {
-        const walks = ref([]);
         const message = ref('');
         const error = ref('');
 
-        async function getCurrentUser() {
-          try {
-            const res = await fetch('http://localhost:3000/api/users/me');
-            if (!res.ok) throw new Error('User not logged in');
-            const data = await res.json();
-            return data.user_id;
-          } catch (err) {
-            console.error('Failed to get current user:', err.message);
-            return null;
-          }
-        }
+        // Hardcoded walker ID
+        const user = 3;
 
-        async function loadWalkRequests() {
-          try {
-            const res = await fetch('http://localhost:3000/api/walks');
-            if (!res.ok) throw new Error('Failed to load walk requests');
-            walks.value = await res.json();
-          } catch (err) {
-            error.value = err.message;
+        // Hardcoded walk requests data
+        const walks = ref([
+          {
+            request_id: 1,
+            dog_name: 'Max',
+            size: 'Medium',
+            requested_time: '2025-06-25T10:00:00',
+            duration_minutes: 30,
+            location: 'Central Park',
+            owner_name: 'alice123'
+          },
+          {
+            request_id: 2,
+            dog_name: 'Bella',
+            size: 'Small',
+            requested_time: '2025-06-26T14:30:00',
+            duration_minutes: 45,
+            location: 'Maple Street',
+            owner_name: 'carol123'
+          },
+          {
+            request_id: 3,
+            dog_name: 'Charlie',
+            size: 'Large',
+            requested_time: '2025-06-27T09:00:00',
+            duration_minutes: 60,
+            location: 'Riverside Walk',
+            owner_name: 'ellie456'
           }
-        }
+        ]);
 
+        // Simulated apply action — just shows success message and disables button
         async function applyToWalk(requestId) {
           try {
-            const walkerId = await getCurrentUser();
-            if (!walkerId) {
-              alert('You must be logged in to apply for a walk.');
-              return;
-            }
+            // Find the walk request index
+            const index = walks.value.findIndex(w => w.request_id === requestId);
+            if (index === -1) throw new Error('Walk request not found');
 
-            const res = await fetch(`http://localhost:3000/api/walks/${requestId}/apply`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ walker_id: walkerId })
-            });
-
-            const result = await res.json();
-
-            if (!res.ok) throw new Error(result.error || 'Application failed');
-            message.value = result.message;
+            // Simulate application success
+            message.value = `Successfully applied to walk request #${requestId}`;
             error.value = '';
-            await loadWalkRequests();
+
+            // Remove the applied walk from list to simulate it's no longer available
+            walks.value.splice(index, 1);
           } catch (err) {
             error.value = err.message;
             message.value = '';
           }
         }
-
-        onMounted(() => {
-          loadWalkRequests();
-        });
 
         return {
           walks,
@@ -107,7 +107,7 @@
       }
     }).mount('#app');
 
-    // Logout function
+    // Logout button clears session and redirects to login page
     document.getElementById('logoutBtn').addEventListener('click', () => {
       sessionStorage.removeItem('loggedInUser');
       document.cookie.split(";").forEach(function(c) {
