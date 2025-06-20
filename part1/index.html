@@ -6,20 +6,17 @@
   <!-- Vue 3 CDN -->
   <script src="https://unpkg.com/vue@3"></script>
   <style>
-    /* Bad color contrast */
     body {
       background-color: #222;
-      color: #555; /* low contrast */
+      color: #555;
       font-family: Arial, sans-serif;
     }
-    /* Tiny button */
     button {
       width: 20px;
       height: 20px;
       margin: 50px;
       cursor: pointer;
     }
-    /* Multiple font sizes and fonts to confuse */
     h1 {
       font-size: 18px;
       font-family: 'Comic Sans MS', cursive;
@@ -28,7 +25,6 @@
       font-size: 12px;
       font-family: 'Times New Roman', serif;
     }
-    /* Scrolling marquee */
     .marquee {
       width: 100%;
       white-space: nowrap;
@@ -47,18 +43,31 @@
 </head>
 <body>
   <div id="app">
-    <div class="marquee">Welcome to the Dog of the Day! Click the tiny button to load a new dog.</div>
+    <div class="marquee" role="banner">Welcome to the Dog of the Day! Click the tiny button to load a new dog.</div>
 
     <h1>{{ dogName }}</h1>
-   <img v-if="dogImage" :src="dogImage" alt="Dog of the day" style="width: 400px; height: 400px;" />
 
-    <!-- Missing alt text breaks accessibility -->
+    <div v-if="!dogImage" style="width: 400px; height: 400px; background: #ccc; display: flex; align-items: center; justify-content: center;">
+      Loading image...
+    </div>
+
+    <img
+      v-if="dogImage"
+      :src="dogImage"
+      :alt="`Picture of dog named ${dogName}`"
+      style="width: 400px; height: 400px;"
+      role="img"
+    />
 
     <p><strong>Breed:</strong> {{ dogBreed }}</p>
     <p><strong>Age:</strong> {{ dogAge }}</p>
 
-    <!-- Tiny, hard to click button (kinematic load) -->
-    <button @click="fetchDog" title="Reload Dog">↻</button>
+    <button
+      @click="fetchDog"
+      type="button"
+      aria-label="Reload Dog Picture"
+      title="Reload Dog Picture"
+    >↻</button>
   </div>
 
   <script>
@@ -78,6 +87,7 @@
       },
       methods: {
         fetchDog() {
+          this.dogImage = ''; // reset to show loading placeholder
           fetch('https://dog.ceo/api/breeds/image/random')
             .then(res => res.json())
             .then(data => {
