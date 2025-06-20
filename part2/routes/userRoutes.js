@@ -37,7 +37,7 @@ router.post('/register', async (req, res) => {
   const { username, email, password, role } = req.body;
 
   try {
-    const [result] = await db.query(`
+    const [result] = await pool.query(`
       INSERT INTO Users (username, email, password_hash, role)
       VALUES (?, ?, ?, ?)
     `, [username, email, password, role]);
@@ -60,7 +60,7 @@ router.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const [rows] = await db.query(`
+    const [rows] = await pool.query(`
       SELECT user_id, username, role FROM Users
       WHERE email = ? AND password_hash = ?
     `, [email, password]);
