@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const pool = require('../models/db');
-
+const pool = require('../models/db');  // Make sure this path is correct
 
 // GET all walk requests (for walkers to view)
 router.get('/', async (req, res) => {
@@ -25,13 +24,14 @@ router.post('/', async (req, res) => {
   const { dog_id, requested_time, duration_minutes, location } = req.body;
 
   try {
-    const [result] = await db.query(`
+    const [result] = await pool.query(`
       INSERT INTO WalkRequests (dog_id, requested_time, duration_minutes, location)
       VALUES (?, ?, ?, ?)
     `, [dog_id, requested_time, duration_minutes, location]);
 
     res.status(201).json({ message: 'Walk request created', request_id: result.insertId });
   } catch (error) {
+    console.error('SQL Error:', error);
     res.status(500).json({ error: 'Failed to create walk request' });
   }
 });
@@ -42,12 +42,12 @@ router.post('/:id/apply', async (req, res) => {
   const { walker_id } = req.body;
 
   try {
-    await db.query(`
+    await pool.query(`
       INSERT INTO WalkApplications (request_id, walker_id)
       VALUES (?, ?)
     `, [requestId, walker_id]);
 
-    await db.query(`
+    await pool.query(`
       UPDATE WalkRequests
       SET status = 'accepted'
       WHERE request_id = ?
