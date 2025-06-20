@@ -129,32 +129,7 @@
         }
       }
 
-      import { onMounted, ref } from 'vue';
-
-setup() {
-  const dogs = ref([]);
-
-  onMounted(() => {
-    const user = JSON.parse(sessionStorage.getItem('loggedInUser'));
-    console.log('Logged-in user:', user);
-    if (!user || user.role !== 'owner') {
-      alert('You must be logged in as an owner to see this page.');
-      return;
-    }
-
-    fetch(`/api/owner/${user.user_id}/dogs`)
-      .then(res => res.json())
-      .then(data => {
-        dogs.value = data;
-      })
-      .catch(err => {
-        console.error(err);
-      });
-  });
-
-  return { dogs };
-}
-
+      
 
       onMounted(() => {
         // Check if logged-in user exists and is owner
