@@ -50,7 +50,8 @@
     <div class="marquee">Welcome to the Dog of the Day! Click the tiny button to load a new dog.</div>
 
     <h1>{{ dogName }}</h1>
-    <img :src="dogImage" alt="" style="width: 400px; height: 400px;" />
+   <img v-if="dogImage" :src="dogImage" alt="Dog of the day" style="width: 400px; height: 400px;" />
+
     <!-- Missing alt text breaks accessibility -->
 
     <p><strong>Breed:</strong> {{ dogBreed }}</p>
