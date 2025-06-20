@@ -38,17 +38,6 @@
         </form>
       </div>
     </div>
-    <form id="newWalkRequestForm">
-  <!-- other inputs for date, time, location, duration -->
-
-  <label for="dogSelect">Select Your Dog:</label>
-  <select id="dogSelect" name="dog_id" required>
-    <option value="">Loading dogs...</option>
-  </select>
-
-  <button type="submit">Create Walk Request</button>
-</form>
-
 
     <!-- Success or error messages -->
     <div v-if="message" class="alert alert-info">{{ message }}</div>
@@ -78,7 +67,10 @@
   <!-- Added a logout button somewhere on dashboard pages -->
 <button type="button" id="logoutBtn" class="btn btn-danger">Logout</button>
 
-
+<label for="dogSelect">Select Your Dog:</label>
+<select id="dogSelect">
+  <option value="">Loading dogs...</option>
+</select>
 
 
 
