@@ -26,18 +26,21 @@ app.get('/api/dogs', async (req, res) => {
 });
 
 // Route to get all dogs owned by a specific owner
+// Route to get all dogs for a specific owner
 app.get('/api/owner/:user_id/dogs', async (req, res) => {
+  const { user_id } = req.params;
   try {
-    const userId = req.params.user_id;
-    const [dogs] = await pool.query(
-      'SELECT dog_id, name FROM Dogs WHERE owner_id = ?',
-      [userId]
+    const [rows] = await pool.query(
+      `SELECT dog_id, name FROM Dogs WHERE owner_id = ?`,
+      [user_id]
     );
-    res.json(dogs);
+    res.json(rows);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error('Error fetching dogs:', err.message);
+    res.status(500).json({ error: 'Failed to fetch dogs' });
   }
 });
+
 
 // GET /api/walkrequests/open
 app.get('/api/walkrequests/open', async (req, res) => {
