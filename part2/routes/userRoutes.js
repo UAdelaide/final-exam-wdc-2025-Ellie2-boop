@@ -1,12 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../models/db');
+const pool = require('../models/db');
 
 
 // GET all users (for admin/testing)
 router.get('/', async (req, res) => {
   try {
-    const [rows] = await db.pool.query('SELECT user_id, username, email, role FROM Users');
+    const [rows] = await db.query('SELECT user_id, username, email, role FROM Users');
     res.json(rows);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch users' });
@@ -19,7 +20,7 @@ router.get('/', async (req, res) => {
 router.get('/owner/:user_id/dogs', async (req, res) => {
   const { user_id } = req.params;
   try {
-    const [rows] = await db.query(
+    const [rows] = await pool.query(
       'SELECT dog_id, name FROM Dogs WHERE owner_id = ?',
       [user_id]
     );
