@@ -34,7 +34,7 @@
       <p class="text-success">Logged in as <strong>{{ loggedInUser.username }}</strong> ({{ loggedInUser.role }})</p>
       <a v-if="loggedInUser.role === 'owner'" href="owner-dashboard.html" class="btn btn-outline-primary me-2">Go to Owner Dashboard</a>
       <a v-if="loggedInUser.role === 'walker'" href="walker-dashboard.html" class="btn btn-outline-success">Go to Walker Dashboard</a>
-      <button @click="logout" class="btn btn-secondary ms-3">Logout</button>
+      <button type="submit" @click="logout" class="btn btn-secondary ms-3">Logout</button>
     </div>
   </div>
 
