@@ -4,8 +4,7 @@
   <meta charset="UTF-8" />
   <title>Dog of the Day</title>
   <!-- Vue 3 CDN -->
-<script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
-
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
   <style>
     body {
       background-color: #222;
@@ -52,15 +51,13 @@
       Loading image...
     </div>
 
-<img
-  v-if="dogImage"
-  :src="dogImage"
-  :alt="dogAlt"
-  style="width: 400px; height: 400px;"
-  role="img"
-/>
-
-
+    <img
+      v-if="dogImage"
+      :src="dogImage"
+      :alt="dogAlt"
+      style="width: 400px; height: 400px;"
+      role="img"
+    />
 
     <p><strong>Breed:</strong> {{ dogBreed }}</p>
     <p><strong>Age:</strong> {{ dogAge }}</p>
@@ -85,16 +82,24 @@
           dogAge: '3 years',
         }
       },
+      computed: {
+        dogAlt() {
+          return `Picture of dog named ${this.dogName}`;
+        }
+      },
       mounted() {
         this.fetchDog();
       },
       methods: {
         fetchDog() {
-          this.dogImage = ''; // reset to show loading placeholder
+          this.dogImage = ''; // reset for loading placeholder
           fetch('https://dog.ceo/api/breeds/image/random')
             .then(res => res.json())
             .then(data => {
               this.dogImage = data.message;
+            })
+            .catch(() => {
+              this.dogImage = '';
             });
         }
       }
