@@ -29,11 +29,10 @@ app.get('/api/dogs', async (req, res) => {
 app.get('/api/owner/:user_id/dogs', async (req, res) => {
   try {
     const userId = req.params.user_id;
-    const [dogs] = await pool.query(`
-      SELECT dog_id, name
-      FROM Dogs
-      WHERE owner_id = ?
-    `, [userId]);
+    const [dogs] = await pool.query(
+      'SELECT dog_id, name FROM Dogs WHERE owner_id = ?',
+      [userId]
+    );
     res.json(dogs);
   } catch (err) {
     res.status(500).json({ error: err.message });
