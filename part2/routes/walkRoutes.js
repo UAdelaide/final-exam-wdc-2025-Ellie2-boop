@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const pool = require('../models/db');  // Make sure this path is correct
+const pool = require('../models/db');// Make sure this path is correct
 
 // GET all walk requests (for walkers to view)
 router.get('/', async (req, res) => {
