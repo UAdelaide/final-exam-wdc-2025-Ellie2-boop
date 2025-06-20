@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../models/db');
 
-fetch(`/api/users/owner/${user.user_id}/dogs`);
 
 
 
