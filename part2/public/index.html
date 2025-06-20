@@ -13,29 +13,19 @@
     <h1 class="mb-4 text-primary">{{ message }}</h1>
     <p class="lead">Connect with trusted walkers for your beloved dog!</p>
 
-    <div v-if="!loggedIn">
-      <form @submit.prevent="login" class="mb-4" style="max-width: 400px;">
-        <div class="mb-3">
-          <label for="username" class="form-label">Username</label>
-          <input v-model="username" type="text" id="username" class="form-control" required />
-        </div>
-
-        <div class="mb-3">
-          <label for="password" class="form-label">Password</label>
-          <input v-model="password" type="password" id="password" class="form-control" required />
-        </div>
-
-        <button type="submit" class="btn btn-primary w-100">Login</button>
-        <div v-if="errorMessage" class="text-danger mt-2">{{ errorMessage }}</div>
-      </form>
-    </div>
-
-    <div v-else>
-      <p class="text-success">Logged in as <strong>{{ loggedInUser.username }}</strong> ({{ loggedInUser.role }})</p>
-      <a v-if="loggedInUser.role === 'owner'" href="owner-dashboard.html" class="btn btn-outline-primary me-2">Go to Owner Dashboard</a>
-      <a v-if="loggedInUser.role === 'walker'" href="walker-dashboard.html" class="btn btn-outline-success">Go to Walker Dashboard</a>
-      <button type="submit" @click="logout" class="btn btn-secondary ms-3">Logout</button>
-    </div>
+    <!-- Login Form Only -->
+    <form @submit.prevent="login" style="max-width: 400px;">
+      <div class="mb-3">
+        <label for="username" class="form-label">Username</label>
+        <input v-model="username" id="username" type="text" class="form-control" required />
+      </div>
+      <div class="mb-3">
+        <label for="password" class="form-label">Password</label>
+        <input v-model="password" id="password" type="password" class="form-control" required />
+      </div>
+      <button type="submit" class="btn btn-primary w-100">Login</button>
+      <div v-if="errorMessage" class="text-danger mt-2">{{ errorMessage }}</div>
+    </form>
   </div>
 
   <script>
@@ -45,59 +35,39 @@
       data() {
         return {
           message: 'Welcome to the Dog Walking Service!',
-          username: 'admin',
-          password: '123',
-          errorMessage: '',
-          loggedInUser: null,
+          username: '',
+          password: '',
+          errorMessage: ''
         };
-      },
-      computed: {
-        loggedIn() {
-          return this.loggedInUser !== null;
-        }
-      },
-      mounted() {
-        // Check sessionStorage for existing login
-        const user = sessionStorage.getItem('loggedInUser');
-        if (user) {
-          this.loggedInUser = JSON.parse(user);
-        }
       },
       methods: {
         login() {
           this.errorMessage = '';
 
-          // Mock users database - replace this with real authentication API
+          // Hardcoded user list - replace with real API call for production
           const users = [
             { username: 'alice123', password: 'hashed123', role: 'owner' },
             { username: 'bobwalker', password: 'hashed456', role: 'walker' },
             { username: 'carol123', password: 'hashed789', role: 'owner' },
             { username: 'david789', password: 'hashed101', role: 'walker' },
-            { username: 'ellie456', password: 'hashed202', role: 'owner' }
+            { username: 'eve456', password: 'hashed202', role: 'owner' }
           ];
 
           const user = users.find(u => u.username === this.username && u.password === this.password);
 
           if (user) {
-            this.loggedInUser = user;
+            // Save user session in sessionStorage
             sessionStorage.setItem('loggedInUser', JSON.stringify(user));
 
             // Redirect based on role
             if (user.role === 'owner') {
               window.location.href = 'owner-dashboard.html';
-            } else if (user.role === 'walker') {
+            } else {
               window.location.href = 'walker-dashboard.html';
             }
           } else {
-            this.errorMessage = 'Invalid username or password';
+            this.errorMessage = 'Invalid username or password.';
           }
-        },
-        logout() {
-          this.loggedInUser = null;
-          sessionStorage.removeItem('loggedInUser');
-          this.username = '';
-          this.password = '';
-          this.errorMessage = '';
         }
       }
     }).mount('#app');
