@@ -27,15 +27,15 @@
               <strong>Location:</strong> {{ walk.location }}<br>
               <strong>Owner:</strong> {{ walk.owner_name }}
             </p>
-            <button type=button class="btn btn-outline-success" @click="applyToWalk(walk.request_id)">Apply</button>
+            <button type="button" class="btn btn-outline-success" @click="applyToWalk(walk.request_id)">Apply</button>
           </div>
         </div>
       </div>
     </div>
     <p v-else>No available walk requests at the moment.</p>
   </div>
-  <!-- Added a logout button somewhere on dashboard pages -->
-<button type="button" id="logoutBtn" class="btn btn-danger">Logout</button>
+
+  <button type="button" id="logoutBtn" class="btn btn-danger">Logout</button>
 
   <script>
     const { createApp, ref, onMounted } = Vue;
@@ -45,11 +45,22 @@
         const walks = ref([]);
         const message = ref('');
         const error = ref('');
-        const user = 3;
+
+        async function getCurrentUser() {
+          try {
+            const res = await fetch('http://localhost:3000/api/users/me');
+            if (!res.ok) throw new Error('User not logged in');
+            const data = await res.json();
+            return data.user_id;
+          } catch (err) {
+            console.error('Failed to get current user:', err.message);
+            return null;
+          }
+        }
 
         async function loadWalkRequests() {
           try {
-            const res = await fetch('/api/walks');
+            const res = await fetch('http://localhost:3000/api/walks');
             if (!res.ok) throw new Error('Failed to load walk requests');
             walks.value = await res.json();
           } catch (err) {
@@ -59,11 +70,18 @@
 
         async function applyToWalk(requestId) {
           try {
-            const res = await fetch(`/api/walks/${requestId}/apply`, {
+            const walkerId = await getCurrentUser();
+            if (!walkerId) {
+              alert('You must be logged in to apply for a walk.');
+              return;
+            }
+
+            const res = await fetch(`http://localhost:3000/api/walks/${requestId}/apply`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ walker_id: user })
+              body: JSON.stringify({ walker_id: walkerId })
             });
+
             const result = await res.json();
 
             if (!res.ok) throw new Error(result.error || 'Application failed');
@@ -89,21 +107,15 @@
       }
     }).mount('#app');
 
-    // Logout function to clear session and redirect to login page
-document.getElementById('logoutBtn').addEventListener('click', () => {
-  // Clear user session stored in sessionStorage
-  sessionStorage.removeItem('loggedInUser');
-
-  // Optionally clear cookies if any (example):
-  document.cookie.split(";").forEach(function(c) {
-    document.cookie = c.replace(/^ +/, "")
-      .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
-  });
-
-  // Redirect back to login page (index.html)
-  window.location.href = 'index.html';
-});
-
+    // Logout function
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      sessionStorage.removeItem('loggedInUser');
+      document.cookie.split(";").forEach(function(c) {
+        document.cookie = c.replace(/^ +/, "")
+          .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+      });
+      window.location.href = 'index.html';
+    });
   </script>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
