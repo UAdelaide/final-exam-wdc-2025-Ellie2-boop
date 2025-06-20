@@ -132,6 +132,22 @@
         };
       }
     }).mount('#app');
+
+    // Logout function to clear session and redirect to login page
+document.getElementById('logoutBtn').addEventListener('click', () => {
+  // Clear user session stored in sessionStorage
+  sessionStorage.removeItem('loggedInUser');
+
+  // Optionally clear cookies if any (example):
+  document.cookie.split(";").forEach(function(c) {
+    document.cookie = c.replace(/^ +/, "")
+      .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+  });
+
+  // Redirect back to login page (index.html)
+  window.location.href = 'index.html';
+});
+
   </script>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
