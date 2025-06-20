@@ -10,9 +10,6 @@ const pool = mysql.createPool({
 
 module.exports = pool;
 
-const mysql = require('mysql2/promise');
-require('dotenv').config();
-
 console.log('DB settings:', {
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
