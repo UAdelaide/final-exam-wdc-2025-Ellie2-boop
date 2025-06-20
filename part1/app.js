@@ -40,8 +40,6 @@ app.get('/api/owner/:user_id/dogs', async (req, res) => {
   }
 });
 
-
-
 // GET /api/walkrequests/open
 app.get('/api/walkrequests/open', async (req, res) => {
   try {
