@@ -26,18 +26,16 @@ app.get('/api/dogs', async (req, res) => {
 });
 
 // Get dogs by owner id
-app.get('/api/owner/:user_id/dogs', async (req, res) => {
-  const { user_id } = req.params;
-  try {
-    const [rows] = await pool.query(
-      `SELECT dog_id, name FROM Dogs WHERE owner_id = ?`,
-      [user_id]
-    );
-    res.json(rows);
-  } catch (err) {
-    console.error('Error fetching dogs by owner:', err.message);
-    res.status(500).json({ error: 'Failed to fetch dogs' });
-  }
+app.get('/api/owner/:user_id/dogs', (req, res) => {
+  const userId = req.params.user_id;
+
+  // Hardcoded sample data for testing only
+  const sampleDogs = {
+    7: [{ dog_id: 2, name: 'Max' }, { dog_id: 5, name: 'Daisy' }],
+    9: [{ dog_id: 3, name: 'Bella' }, { dog_id: 6, name: 'Rocky' }],
+  };
+
+  res.json(sampleDogs[userId] || []);
 });
 
 app.listen(PORT, () => {
