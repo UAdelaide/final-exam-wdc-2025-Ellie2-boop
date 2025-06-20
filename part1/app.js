@@ -6,6 +6,11 @@ const PORT = 3000;
 
 app.use(express.json());
 
+app.get('/', (req, res) => {
+  res.send('DogWalkService API is running');
+});
+
+
 // GET /api/dogs
 app.get('/api/dogs', async (req, res) => {
   try {
