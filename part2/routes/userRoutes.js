@@ -1,9 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const pool = require('../models/db');
-
-
-
+const pool = require('../models/db'); // adjust path if needed
 
 // GET all users (for admin/testing)
 router.get('/', async (req, res) => {
@@ -14,8 +11,6 @@ router.get('/', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch users' });
   }
 });
-
-// Add this below your existing routes in userRoutes.js
 
 // GET dogs owned by a specific user
 router.get('/owner/:user_id/dogs', async (req, res) => {
@@ -32,16 +27,15 @@ router.get('/owner/:user_id/dogs', async (req, res) => {
   }
 });
 
-
 // POST a new user (simple signup)
 router.post('/register', async (req, res) => {
   const { username, email, password, role } = req.body;
 
   try {
-    const [result] = await pool.query(`
-      INSERT INTO Users (username, email, password_hash, role)
-      VALUES (?, ?, ?, ?)
-    `, [username, email, password, role]);
+    const [result] = await pool.query(
+      `INSERT INTO Users (username, email, password_hash, role) VALUES (?, ?, ?, ?)`,
+      [username, email, password, role]
+    );
 
     res.status(201).json({ message: 'User registered', user_id: result.insertId });
   } catch (error) {
@@ -49,22 +43,15 @@ router.post('/register', async (req, res) => {
   }
 });
 
-router.get('/me', (req, res) => {
-  if (!req.session.user) {
-    return res.status(401).json({ error: 'Not logged in' });
-  }
-  res.json(req.session.user);
-});
-
-// POST login (dummy version)
+// POST login
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const [rows] = await pool.query(`
-      SELECT user_id, username, role FROM Users
-      WHERE email = ? AND password_hash = ?
-    `, [email, password]);
+    const [rows] = await pool.query(
+      `SELECT user_id, username, role FROM Users WHERE email = ? AND password_hash = ?`,
+      [email, password]
+    );
 
     if (rows.length === 0) {
       return res.status(401).json({ error: 'Invalid credentials' });
