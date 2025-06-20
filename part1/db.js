@@ -4,7 +4,7 @@ const pool = mysql.createPool({
   host: 'localhost',
   user: 'root',
   password: 'Yes',
-  database: 'dogwalkssql',
+  database: 'DogWalkService',
   multipleStatements: true
 });
 
